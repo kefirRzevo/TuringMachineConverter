@@ -1,16 +1,18 @@
 #pragma once
 
-#include <tuple>
+#include <algorithm>
 #include <array>
 #include <deque>
-#include <memory>
-#include <string>
-#include <vector>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <stdexcept>
-#include <algorithm>
+#include <string>
+#include <tuple>
 #include <unordered_map>
+#include <vector>
+
+namespace machines {
 
 using Symbol = bool;
 const size_t SymbolCount = 2;
@@ -20,40 +22,38 @@ enum class Move : bool {
   R,
 };
 
-inline
-Move toMove(const std::string& move) {
-    if (move == "L") {
-      return Move::L;
-    } else if (move == "R") {
-      return Move::R;
-    } else {
-      throw std::runtime_error("Can't read move " + move);
-    }
-}
-
-inline
-std::string toString(Move move) {
-  switch (move) {
-    case Move::L: return "L";
-    case Move::R: return "R";
+inline Move toMove(const std::string &move) {
+  if (move == "L") {
+    return Move::L;
+  } else if (move == "R") {
+    return Move::R;
+  } else {
+    throw std::runtime_error("Can't read move " + move);
   }
 }
 
-inline
-Symbol toSymbol(char sym) {
+inline std::string toString(Move move) {
+  switch (move) {
+  case Move::L:
+    return "L";
+  case Move::R:
+    return "R";
+  }
+}
+
+inline Symbol toSymbol(char sym) {
   switch (sym) {
-    case '0': return false;
-    case '1': return true;
-    default: 
+  case '0':
+    return false;
+  case '1':
+    return true;
+  default:
     std::cerr << "[" << sym << "]" << std::endl;
     throw std::runtime_error("Unknown symbol " + std::string(1, sym));
   }
 }
 
-inline
-char toChar(Symbol sym) {
-  return sym ? '1' : '0';
-}
+inline char toChar(Symbol sym) { return sym ? '1' : '0'; }
 
 class Jump final {
   enum class Type : bool {
@@ -70,7 +70,7 @@ public:
   Jump() : type_(Type::Unknown) {}
 
   Jump(Symbol write, Move move)
-  : type_(Type::Unknown), write_(write), move_(move) {}
+      : type_(Type::Unknown), write_(write), move_(move) {}
 
   void setNewState(int newState) {
     newState_ = newState;
@@ -83,7 +83,7 @@ public:
 
   Move getMove() const { return move_; }
 
-  void dump(std::ostream& os) const {
+  void dump(std::ostream &os) const {
     os << "write " << write_ << "; new state " << newState_ << "; ";
     os << "move " << toString(move_) << std::endl;
   }
@@ -109,13 +109,14 @@ public:
 
   void setJumpNewState(size_t pos, int newState) {
     jumps_[pos].setNewState(newState);
-    auto valid = std::all_of(jumps_.begin(), jumps_.end(), [](auto&& jump) {
-      return jump.validate(); }
-    );
-    if (valid) { type_ = Type::Known; }
+    auto valid = std::all_of(jumps_.begin(), jumps_.end(),
+                             [](auto &&jump) { return jump.validate(); });
+    if (valid) {
+      type_ = Type::Known;
+    }
   }
 
-  void setJump(size_t pos, Jump&& jump) { jumps_[pos] = std::move(jump); }
+  void setJump(size_t pos, Jump &&jump) { jumps_[pos] = std::move(jump); }
 
   void setHltType() { type_ = Type::Hlt; }
 
@@ -133,7 +134,7 @@ public:
 
   bool validate() const { return type_ != Type::Unknown; }
 
-  void dump(std::ostream& os) const {
+  void dump(std::ostream &os) const {
     os << "Val " << val_ << std::endl;
     for (auto i = 0; i != SymbolCount; ++i) {
       os << "\tsym " << i << " ";
@@ -147,31 +148,30 @@ class States final {
 
   std::vector<state_value> states_;
 
-  State& getState(int val) { return states_.at(val).second; }
+  State &getState(int val) { return states_.at(val).second; }
 
-  const State& getState(int val) const { return states_.at(val).second; }
+  const State &getState(int val) const { return states_.at(val).second; }
 
   States() = default;
 
   bool validate() const {
-    return std::all_of(states_.begin(), states_.end(), [](auto&& state) {
-      return state.second.validate();
-    });
+    return std::all_of(states_.begin(), states_.end(),
+                       [](auto &&state) { return state.second.validate(); });
   }
 
-  int addState(const std::string& stateName) {
-      auto found = std::find_if(states_.begin(), states_.end(), [&](auto&& state) {
-        return state.first == stateName;
-      });
-      if (found != states_.end()) {
-        return found->second.getVal();
-      }
-      states_.emplace_back(stateName, states_.size());
-      return states_.back().second.getVal();
+  int addState(const std::string &stateName) {
+    auto found =
+        std::find_if(states_.begin(), states_.end(),
+                     [&](auto &&state) { return state.first == stateName; });
+    if (found != states_.end()) {
+      return found->second.getVal();
+    }
+    states_.emplace_back(stateName, states_.size());
+    return states_.back().second.getVal();
   }
 
 public:
-  static States read(std::istream& is) {
+  static States read(std::istream &is) {
     States states;
     auto hltVal = states.addState("hlt");
     states.getState(hltVal).setHltType();
@@ -188,7 +188,7 @@ public:
       if (is >> stateName >> sym >> symWrite >> stateNext >> move) {
         prevPos = is.tellg();
         auto stateVal = states.addState(stateName);
-        auto& state = states.getState(stateVal);
+        auto &state = states.getState(stateVal);
         state.setJump(sym, Jump{symWrite, toMove(move)});
         toFill.emplace_back(state.getVal(), sym, stateNext);
       } else {
@@ -197,7 +197,7 @@ public:
         break;
       }
     }
-    for (auto&& [stateVal, jumpSym, nextStateName] : toFill) {
+    for (auto &&[stateVal, jumpSym, nextStateName] : toFill) {
       auto nextStateVal = states.getStateVal(nextStateName);
       states.getState(stateVal).setJumpNewState(jumpSym, nextStateVal);
     }
@@ -207,21 +207,21 @@ public:
     return states;
   }
 
-  const std::string& getStateName(int val) const { return states_.at(val).first; }
+  const std::string &getStateName(int val) const {
+    return states_.at(val).first;
+  }
 
-  int getStateVal(const std::string& stateName) const {
-    auto found = std::find_if(states_.begin(), states_.end(), [&](auto&& state) {
-      return state.first == stateName;
-    });
+  int getStateVal(const std::string &stateName) const {
+    auto found =
+        std::find_if(states_.begin(), states_.end(),
+                     [&](auto &&state) { return state.first == stateName; });
     if (found != states_.end()) {
       return found->second.getVal();
     }
     throw std::runtime_error("Can't find state " + stateName);
   }
 
-  bool isHltType(int stateVal) const {
-    return getState(stateVal).isHltType();
-  }
+  bool isHltType(int stateVal) const { return getState(stateVal).isHltType(); }
 
   Move getJumpMove(int stateVal, size_t pos) const {
     return getState(stateVal).getJumpMove(pos);
@@ -235,8 +235,8 @@ public:
     return getState(stateVal).getJumpWriteSymbol(pos);
   }
 
-  void dumpStates(std::ostream& os) const {
-    for (auto&& state : states_) {
+  void dumpStates(std::ostream &os) const {
+    for (auto &&state : states_) {
       os << "State " << state.first << " ";
       if (state.second.isHltType()) {
         os << "Val " << state.second.getVal() << std::endl;
@@ -246,8 +246,8 @@ public:
     }
   }
 
-  void dump(std::ostream& os) const {
-    for (auto&& state : states_) {
+  void dump(std::ostream &os) const {
+    for (auto &&state : states_) {
       os << "State " << state.first << " ";
       if (state.second.isHltType()) {
         os << "Val " << state.second.getVal() << std::endl;
@@ -257,3 +257,5 @@ public:
     }
   }
 };
+
+} // namespace machines
