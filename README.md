@@ -24,3 +24,21 @@ The tag system is a certain alphabet and a queue over which operations are perfo
 For example we had line ``ACDA`` and have a rule for symbol `A` -> `CCA`. That means that the next state will be ``DACCA``.
 So, first we need to show that using such a system it will be possible to perform one step of the Turing machine. This is described in more detail in the article *Matthew Cook "Universality in Elementary Cellular Automata"*
 
+But here are the results for both machines:
+```
+  Turing machine emulation
+  110[a]111
+  11[b]1111
+  1[b]11111
+  0[b]111111
+  01[a]11111
+  001[hlt]1111
+
+  Tag system emulation
+  (Ha0Ha1)(La0La1)[3](Ra0Ra1)[6]Ra0
+  (Hb1Hb0)(Lb1Lb0)(Rb1Rb0)[15]
+  (Hb1Hb0)(Rb1Rb0)[31]
+  (Hb0Rb1)(Rb0Rb1)[62]Rb0
+  (Ha1Ha0)(Ra1Ra0)[31]
+  (Hhlt1Hhlt0)(Rhlt1Rhlt0)[15]
+```

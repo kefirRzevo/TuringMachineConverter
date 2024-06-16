@@ -1,0 +1,15 @@
+Turing machine emulation
+110[a]111
+11[b]1111
+1[b]11111
+0[b]111111
+01[a]11111
+001[hlt]1111
+
+Tag system emulation
+(Ha0Ha1)(La0La1)[3](Ra0Ra1)[6]Ra0
+(Hb1Hb0)(Lb1Lb0)(Rb1Rb0)[15]
+(Hb1Hb0)(Rb1Rb0)[31]
+(Hb0Rb1)(Rb0Rb1)[62]Rb0
+(Ha1Ha0)(Ra1Ra0)[31]
+(Hhlt1Hhlt0)(Rhlt1Rhlt0)[15]
