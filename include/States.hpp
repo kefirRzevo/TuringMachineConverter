@@ -235,17 +235,6 @@ public:
     return getState(stateVal).getJumpWriteSymbol(pos);
   }
 
-  void dumpStates(std::ostream &os) const {
-    for (auto &&state : states_) {
-      os << "State " << state.first << " ";
-      if (state.second.isHltType()) {
-        os << "Val " << state.second.getVal() << std::endl;
-        continue;
-      }
-      state.second.dump(os);
-    }
-  }
-
   void dump(std::ostream &os) const {
     for (auto &&state : states_) {
       os << "State " << state.first << " ";
