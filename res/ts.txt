@@ -1,0 +1,35 @@
+tags:
+Hhlt0 Hhlt1 Hhlt Lhlt0 Lhlt1 Lhlt Rhlt0 Rhlt1 Rhlt Rhlthlt Ha0 Ha1 Ha La0 La1 La Ra0 Ra1 Ra Raa Hb0 Hb1 Hb Lb0 Lb1 Lb Rb0 Rb1 Rb Rbb 
+
+halt:
+Hhlt0 Hhlt1 Lhlt0 Lhlt1 Rhlt0 Rhlt1 
+
+table:
+Hhlt -> Hhlt1 Hhlt0 
+Lhlt -> Lhlt1 Lhlt0 
+Rhlt -> Rhlt1 Rhlt0 
+Rhlthlt -> Rhlt Rhlt 
+Ha0 -> Rbb Rbb Hb Hb 
+Ha1 -> Hhlt 
+Ha -> Ha1 Ha0 
+La0 -> Lb 
+La1 -> Lhlt Lhlt Lhlt Lhlt 
+La -> La1 La0 
+Ra0 -> Rb Rb Rb Rb 
+Ra1 -> Rhlt 
+Ra -> Ra1 Ra0 
+Raa -> Ra Ra 
+Hb0 -> Ha Ha 
+Hb1 -> Rbb Rbb Hb 
+Hb -> Hb1 Hb0 
+Lb0 -> La La La La 
+Lb1 -> Lb 
+Lb -> Lb1 Lb0 
+Rb0 -> Ra 
+Rb1 -> Rb Rb Rb Rb 
+Rb -> Rb1 Rb0 
+Rbb -> Rb Rb 
+
+
+initial:
+Ha0 Ha1 La0 La1 La0 La1 La0 La1 Ra0 Ra1 Ra0 Ra1 Ra0 Ra1 Ra0 Ra1 Ra0 Ra1 Ra0 Ra1 Ra0 

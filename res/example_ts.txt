@@ -1,0 +1,12 @@
+tags:
+A B C
+
+halt:
+B
+
+table:
+A -> A C
+C -> A B
+
+initial:
+A B C

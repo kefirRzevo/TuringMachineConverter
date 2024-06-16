@@ -1,6 +1,14 @@
+states:
+hlt a b
+
+halt:
+hlt
+
+table:
 a 0 1 b L
 a 1 0 hlt R
 b 0 0 a R
 b 1 1 b L
 
+initial:
 110[a]111
