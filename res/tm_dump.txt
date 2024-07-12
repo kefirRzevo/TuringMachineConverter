@@ -1,0 +1,19 @@
+states:
+hlt	a	b	
+
+halt:
+hlt
+
+table:
+a	0	1	b	L
+a	1	0	hlt	R
+b	0	0	a	R
+b	1	1	b	L
+
+
+110[a]111
+11[b]1111
+1[b]11111
+0[b]111111
+01[a]11111
+001[hlt]1111
