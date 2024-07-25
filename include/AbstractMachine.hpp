@@ -4,49 +4,24 @@
 
 namespace machines {
 
-// template<typename Impl>
-// concept bool hasRead = requires (Impl impl) {
-//   { impl.read(std::istream&) } -> void;
-// };
-
-template<typename Impl>
-class Machine {
-  Impl* impl() {
-    return static_cast<Impl*>(this);
-  }
+template <typename Impl> class Machine {
+  Impl *impl() { return static_cast<Impl *>(this); }
 
 public:
-  void read(std::istream& is) {
-    return impl()->read(is);
-  }
+  using DumpLvl = unsigned int;
 
-  void dumpTable(std::ostream& os) const {
-    return impl()->dumpTable(os);
-  }
-
-  void dumpState(std::ostream& os) const {
-    return impl()->dumpState(os);
-  }
-
-  void step() {
-    return impl()->step();
-  }
-
-  bool hlt() const {
-    return impl()->hlt();
+  void execute(std::istream &is, std::ostream& os, DumpLvl lvl) {
+    return impl()->execute(is, os, lvl);
   }
 };
 
-template <typename Impl, typename Machine>
-class Converter {
-  Impl* impl() {
-    return static_cast<Impl*>(this);
-  }
+template <typename Impl, typename Machine> class Converter {
+  Impl *impl() { return static_cast<Impl *>(this); }
 
 public:
-  void convert(const Machine& machine, std::ostream& os) {
-    return impl()->covert(machine, os);
+  void convert(const Machine &machine, std::ostream &os) {
+    return impl()->convert(machine, os);
   }
 };
 
-} // namespace machines {
+} // namespace converters

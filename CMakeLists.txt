@@ -1,18 +1,41 @@
 cmake_minimum_required (VERSION 3.16)
-project (converter)
 
 set(CMAKE_CXX_FLAGS "-O0 -g")
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+
+project(machines)
 
 find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
 
-#main
-set (SOURCES main.cc)
+add_executable (ETM lib/ExecuteTM.cc)
+target_include_directories (ETM PRIVATE includes)
+target_include_directories (ETM PRIVATE include ${Boost_INCLUDE_DIR})
+target_link_libraries(ETM ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
-add_executable (${PROJECT_NAME} ${SOURCES})
+add_executable (CTM lib/ConvertTM.cc)
+target_include_directories (CTM PRIVATE includes)
+target_include_directories (CTM PRIVATE include ${Boost_INCLUDE_DIR})
+target_link_libraries(CTM ${Boost_PROGRAM_OPTIONS_LIBRARY})
+
+add_executable (ETS lib/ExecuteTS.cc)
+target_include_directories (ETS PRIVATE includes)
+target_include_directories (ETS PRIVATE include ${Boost_INCLUDE_DIR})
+target_link_libraries(ETS ${Boost_PROGRAM_OPTIONS_LIBRARY})
+
+add_executable (CTS lib/ConvertTS.cc)
+target_include_directories (CTS PRIVATE includes)
+target_include_directories (CTS PRIVATE include ${Boost_INCLUDE_DIR})
+target_link_libraries(CTS ${Boost_PROGRAM_OPTIONS_LIBRARY})
+
+add_executable (ECTS lib/ExecuteCTS.cc)
+target_include_directories (ECTS PRIVATE includes)
+target_include_directories (ECTS PRIVATE include ${Boost_INCLUDE_DIR})
+target_link_libraries(ECTS ${Boost_PROGRAM_OPTIONS_LIBRARY})
+
+add_executable (${PROJECT_NAME} main.cc)
 target_include_directories (${PROJECT_NAME} PRIVATE includes)
 target_include_directories (${PROJECT_NAME} PRIVATE include ${Boost_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
 add_compile_options (-Werror -Wall -Wextra -Wpedantic)
-target_link_libraries(${PROJECT_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY})

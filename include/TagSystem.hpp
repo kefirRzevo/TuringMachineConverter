@@ -10,23 +10,25 @@
 
 namespace machines {
 
-namespace detail {
+class TSConverter;
+
+namespace ts {
 
 using utils::checkPattern;
 using utils::readLineToSS;
 
-class Tags {
+class Tags final {
 public:
   using TagVal = unsigned int;
 
-  struct Tag {
+  struct Tag final {
     TagVal val_;
     std::vector<TagVal> append_;
   };
 
-private:
   using TagPair = std::pair<std::string, Tag>;
 
+private:
   std::vector<TagPair> tags_;
   std::vector<TagVal> halts_;
 
@@ -82,7 +84,8 @@ private:
     is >> pat;
     checkPattern(pat, "table:");
     std::getline(is, pat);
-    for (auto i = 0; i != tags_.size(); ++i) {
+    assert(tags_.size() > halts_.size());
+    for (auto i = 0; i != tags_.size() - halts_.size(); ++i) {
       auto iss = readLineToSS(is);
       iss >> tagStr >> pat;
       checkPattern(pat, "->");
@@ -162,10 +165,21 @@ public:
     dumpHalt(os);
     dumpTable(os);
   }
+
+  TagVal size() const noexcept { return tags_.size(); }
+
+  auto haltBegin() const noexcept { return halts_.begin(); }
+
+  auto haltEnd() const noexcept { return halts_.end(); }
+
+  auto begin() const noexcept { return tags_.begin(); }
+
+  auto end() const noexcept { return tags_.end(); }
 };
 
-struct Queue {
+struct Queue final {
   using TagVal = Tags::TagVal;
+
   std::deque<TagVal> queue_;
 
   void read(std::istream& is, const Tags& tags) {
@@ -188,17 +202,12 @@ struct Queue {
   }
 };
 
-} // namespace detail
-
-class TagSystem {
-  using Tags = detail::Tags;
-  using Queue = detail::Queue;
+class TagSystem final : public machines::Machine<TagSystem> {
   using TagVal = Tags::TagVal;
   
   Tags tags_;
   Queue queue_;
 
-public:
   void read(std::istream& is) {
     tags_.read(is);
     queue_.read(is, tags_);
@@ -214,6 +223,10 @@ public:
 
   void step() {
     auto& queue = queue_.queue_;
+    if (queue.empty()) {
+      auto msg = "Queue is empty";
+      throw std::runtime_error(msg);
+    }
     auto& tag = tags_.getTag(queue.front());
     auto& app = tag.append_;
     std::move(app.begin(), app.end(), std::back_inserter(queue));
@@ -231,6 +244,26 @@ public:
   bool hlt() const {
     return tags_.hlt(queue_.queue_.front());
   }
+
+  friend class machines::TSConverter;
+
+public:
+  void execute(std::istream &is, std::ostream& os, DumpLvl lvl) {
+    read(is);
+    dumpTable(os);
+    while (!hlt()) {
+      if (lvl > 0) {
+        if (onHead() || lvl > 1) {
+          dumpState(os);
+        }
+      }
+      step();
+    }
+    dumpState(os);
+    os.flush();
+  }
 };
+
+} // namespace ts
 
 } // namespace machines

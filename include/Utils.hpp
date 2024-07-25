@@ -26,65 +26,51 @@ inline std::istringstream readLineToSS(std::istream &is) {
   return iss;
 }
 
-inline bool toBool(char sym) {
-  switch (sym) {
-  case '0':
-    return false;
-  case '1':
-    return true;
-  default: {
-    auto msg = "Unknown symbol '" + std::string(1, sym) + "'";
-    throw std::runtime_error(msg);
-  }
-  }
-}
-
-inline char toChar(bool sym) { return sym ? '1' : '0'; }
-
-template<typename T>
-class EnumIterator {
+template <typename T> class EnumIterator {
 public:
-    using difference_type = ptrdiff_t;
-    using value_type = T;
-    using reference = T&;
-    using pointer = T*;
-    using iterator_category = std::forward_iterator_tag;
+  using difference_type = ptrdiff_t;
+  using value_type = T;
+  using reference = T &;
+  using pointer = T *;
+  using iterator_category = std::forward_iterator_tag;
 
-    explicit EnumIterator(T value) : value_(value) {}
+  explicit EnumIterator(T value) : value_(value) {}
 
-    T operator*() const { return value_; }
+  T operator*() const { return value_; }
 
-    EnumIterator& operator++() {
-        value_ = (T)((int)(value_) + 1);
-        return *this;
-    }
+  EnumIterator &operator++() {
+    value_ = (T)((int)(value_) + 1);
+    return *this;
+  }
 
-    EnumIterator operator++(int) {
-        EnumIterator tmp = *this;
-        ++(*this);
-        return tmp;
-    }
+  EnumIterator operator++(int) {
+    EnumIterator tmp = *this;
+    ++(*this);
+    return tmp;
+  }
 
-    bool operator==(const EnumIterator& rhs) const {
-      return value_ == rhs.value_;
-    }
-    bool operator!=(const EnumIterator& rhs) const { return value_ != rhs.value_; }
+  bool operator==(const EnumIterator &rhs) const {
+    return value_ == rhs.value_;
+  }
+  bool operator!=(const EnumIterator &rhs) const {
+    return value_ != rhs.value_;
+  }
 
 private:
-    T value_;
+  T value_;
 };
 
-template<typename T>
-class EnumRange {
+template <typename T> class EnumRange {
 public:
-    EnumRange(T begin, T end) : begin_(begin), end_(end) {}
+  EnumRange(T begin, T end) : begin_(begin), end_(end) {}
 
-    EnumIterator<T> begin() const { return EnumIterator<T>(begin_); }
-    EnumIterator<T> end() const { return EnumIterator<T>((T)((int)end_+1)); }
+  EnumIterator<T> begin() const { return EnumIterator<T>(begin_); }
+
+  EnumIterator<T> end() const { return EnumIterator<T>((T)((int)end_ + 1)); }
 
 private:
-    T begin_;
-    T end_;
+  T begin_;
+  T end_;
 };
 
 } // namespace utils

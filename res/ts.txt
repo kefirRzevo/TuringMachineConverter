@@ -2,17 +2,11 @@ tags:
 Hhlt0 Hhlt1 Hhlt Lhlt0 Lhlt1 Lhlt Rhlt0 Rhlt1 Rhlt Rhlthlt Ha0 Ha1 Ha La0 La1 La Ra0 Ra1 Ra Raa Hb0 Hb1 Hb Lb0 Lb1 Lb Rb0 Rb1 Rb Rbb 
 
 halt:
-Hhlt0 Hhlt1 
+Hhlt0 Hhlt1 Lhlt0 Lhlt1 Rhlt0 Rhlt1 
 
 table:
-Hhlt0 -> Hhlt Hhlt 
-Hhlt1 -> Hhlt 
 Hhlt -> Hhlt1 Hhlt0 
-Lhlt0 -> Lhlt 
-Lhlt1 -> Lhlt 
 Lhlt -> Lhlt1 Lhlt0 
-Rhlt0 -> Rhlt Rhlt Rhlt Rhlt 
-Rhlt1 -> Rhlt Rhlt Rhlt Rhlt 
 Rhlt -> Rhlt1 Rhlt0 
 Rhlthlt -> Rhlt Rhlt 
 Ha0 -> Rbb Rbb Hb Hb 
